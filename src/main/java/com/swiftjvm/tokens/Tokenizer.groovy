@@ -34,7 +34,7 @@ class Tokenizer {
 		this.pushbackReader = new PushbackReader(new StringReader(s), 4)
 	}
 	
-	Token nextToken() throws IOException {
+	Token nextToken() {
 		int c = pushbackReader.read()
 		 
 		if (c >= 0 && c < characterState.length) {
@@ -44,8 +44,10 @@ class Tokenizer {
 	}
 	
 	void characterStateRange(Object from, Object to, State state) {
-		((from as int)..(to as int)).each { Integer item ->
-			characterState[item] = state 
+		int f = (int) from
+		int t = (int) to
+		(f..t).each { int i ->
+			characterState[i] = state 
 		}
 	}
 }
