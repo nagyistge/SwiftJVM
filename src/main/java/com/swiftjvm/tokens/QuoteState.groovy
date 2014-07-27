@@ -19,12 +19,4 @@ class QuoteState extends CharSequenceState {
 		return new Token(type:Type.QUOTED, stringValue:String.copyValueOf(charbuf, 0, i))
 	}
 	
-	static void main(String[] args) {
-		String s = "\"scott's\nquoted\" text"
-		PushbackReader pr = new PushbackReader(new StringReader(s), 4)
-		
-		Token t = new StateTests().nextToken(pr, pr.read(), null)
-		
-		println t
-	}
 }
