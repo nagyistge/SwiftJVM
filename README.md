@@ -2,6 +2,8 @@
 
 An adventure in creating a JVM language with the goal of supporting Apple's Swift.
 
+![Travis-ci Status](https://travis-ci.org/sjhorn/SwiftJVM.svg "Travis CI")
+
 # Inspired by #
 * [Building Parsers with Java](http://oozinoz.xp123.com/bpwj.htm)
 * [Implementing High Performance Parsers in Java](http://www.infoq.com/articles/HIgh-Performance-Parsers-in-Java)

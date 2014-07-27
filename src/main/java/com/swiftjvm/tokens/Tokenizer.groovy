@@ -16,12 +16,12 @@ class Tokenizer {
 	WordState wordState = new WordState()
 	
 	public Tokenizer() {
-		characterState[0..255] = symbolState
-		characterState[0..' '] = whitespaceState
-		characterState['a'..'z'] = wordState
-		characterState['A'..'z'] = wordState
-		characterState[192..255] = wordState
-		characterState['0'..'9'] = numberState
+		characterStateRange(0, 255, symbolState)
+		characterStateRange(0, ' ', whitespaceState)
+		characterStateRange('a', 'z', wordState)
+		characterStateRange('A', 'z', wordState)
+		characterStateRange(192, 255, wordState)
+		characterStateRange('0', '9', numberState)
 		characterState['-'] = numberState
 		characterState['.'] = numberState
 		characterState['"'] = quoteState
@@ -41,5 +41,11 @@ class Tokenizer {
 			return characterState[c].nextToken(pushbackReader, c, this)
 		}
 		return Token.EOF
+	}
+	
+	void characterStateRange(Object from, Object to, State state) {
+		((from as int)..(to as int)).each { Integer item ->
+			characterState[item] = state 
+		}
 	}
 }
