@@ -36,12 +36,59 @@ class StateTests extends GMockTestCase {
 		Tokenizer mock = mock(Tokenizer.class)
 		mock.nextToken().returns(new Token(type:Type.WORD, stringValue:"test"))
 		play {
-			PushbackReader pr = new PushbackReader(new StringReader("     test"), 4)
+			String s = "     test"
+			PushbackReader pr = new PushbackReader(new StringReader(s), 4)
 			Token t = new WhitespaceState().nextToken(pr, pr.read(), mock)
 			
+			assert pr.readLine() == "test"
 			assert t.type == Type.WORD
 			assert t.numberValue == 0
 			assert t.stringValue == "test"
 		}
 	}
+	
+	@Test 
+	void testSlashState() {
+		String s = "/what after"
+		PushbackReader pr = new PushbackReader(new StringReader(s), 4)
+		Token t = new SlashState().nextToken(pr, pr.read(), null)
+		
+		assert pr.readLine() == "what after"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == "/"
+	}
+	
+	@Test
+	void testSlashSlashState() {
+		Tokenizer mock = mock(Tokenizer.class)
+		mock.nextToken().returns(new Token(type:Type.WORD, stringValue:"after"))
+		play {
+			String s = "//what\nafter"
+			PushbackReader pr = new PushbackReader(new StringReader(s), 4)
+			Token t = new SlashState().nextToken(pr, pr.read(), mock)
+			
+			assert pr.readLine() == "after"
+			assert t.type == Type.WORD
+			assert t.numberValue == 0
+			assert t.stringValue == "after"
+		}
+	}
+	
+	@Test
+	void testSlashStarState() {
+		Tokenizer mock = mock(Tokenizer.class)
+				mock.nextToken().returns(new Token(type:Type.WORD, stringValue:"after"))
+				play {
+			String s = "/*what\nafter*/next"
+					PushbackReader pr = new PushbackReader(new StringReader(s), 4)
+			Token t = new SlashState().nextToken(pr, pr.read(), mock)
+			
+			assert pr.readLine() == "next"
+			assert t.type == Type.WORD
+			assert t.numberValue == 0
+			assert t.stringValue == "after"
+		}
+	}
+	
 }
