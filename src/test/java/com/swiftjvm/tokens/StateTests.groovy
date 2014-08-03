@@ -78,8 +78,8 @@ class StateTests extends GMockTestCase {
 	@Test
 	void testSlashStarState() {
 		Tokenizer mock = mock(Tokenizer.class)
-				mock.nextToken().returns(new Token(type:Type.WORD, stringValue:"after"))
-				play {
+		mock.nextToken().returns(new Token(type:Type.WORD, stringValue:"after"))
+		play {
 			String s = "/*what\nafter*/next"
 					PushbackReader pr = new PushbackReader(new StringReader(s), 4)
 			Token t = new SlashState().nextToken(pr, pr.read(), mock)
@@ -89,6 +89,44 @@ class StateTests extends GMockTestCase {
 			assert t.numberValue == 0
 			assert t.stringValue == "after"
 		}
+	}
+	
+	@Test
+	void testSymbolState() {
+		PushbackReader pr = new PushbackReader(new StringReader("/2343"))
+		Token t = new SymbolState().nextToken(pr, pr.read(), null)
+		assert pr.readLine() == "2343"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == "/"
+		
+		pr = new PushbackReader(new StringReader("!=true"))
+		t = new SymbolState().nextToken(pr, pr.read(), null)
+		assert pr.readLine() == "true"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == "!="
+		
+		pr = new PushbackReader(new StringReader("==false"))
+		t = new SymbolState().nextToken(pr, pr.read(), null)
+		assert pr.readLine() == "false"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == "=="
+		
+		pr = new PushbackReader(new StringReader("!=true"))
+		t = new SymbolState().nextToken(pr, pr.read(), null)
+		assert pr.readLine() == "true"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == "!="
+		
+		pr = new PushbackReader(new StringReader(">=1"))
+		t = new SymbolState().nextToken(pr, pr.read(), null)
+		assert pr.readLine() == "1"
+		assert t.type == Type.SYMBOL
+		assert t.numberValue == 0
+		assert t.stringValue == ">="
 	}
 	
 }
