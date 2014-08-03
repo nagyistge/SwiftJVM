@@ -129,4 +129,49 @@ class StateTests extends GMockTestCase {
 		assert t.stringValue == ">="
 	}
 	
+	@Test
+	void testNumberState() {
+		Tokenizer mock = mock(Tokenizer.class)
+		SymbolState symbolState = new SymbolState()
+		mock.getSymbolState().returns(symbolState)
+		
+		play {
+			PushbackReader pr = new PushbackReader(new StringReader("-.test"), 4)
+			Token t = new NumberState().nextToken(pr, pr.read(), mock)
+			
+			assert pr.readLine() == ".test"
+			assert t.type == Type.SYMBOL
+			assert t.numberValue == 0
+			assert t.stringValue == "-"
+		}
+		
+		PushbackReader pr = new PushbackReader(new StringReader("123+1234"), 4)
+		Token t = new NumberState().nextToken(pr, pr.read(), mock)
+		assert pr.readLine() == "+1234"
+		assert t.type == Type.NUMBER
+		assert t.numberValue == 123.0
+		assert t.stringValue == null
+
+		pr = new PushbackReader(new StringReader("-123.678+4"), 4)
+		t = new NumberState().nextToken(pr, pr.read(), mock)
+		assert pr.readLine() == "+4"
+		assert t.type == Type.NUMBER
+		assert t.numberValue == -123.678
+		assert t.stringValue == null
+		
+		pr = new PushbackReader(new StringReader(".32342.123"), 4)
+		t = new NumberState().nextToken(pr, pr.read(), mock)
+		assert pr.readLine() == ".123"
+		assert t.type == Type.NUMBER
+		assert t.numberValue == 0.32342
+		assert t.stringValue == null
+		
+		pr = new PushbackReader(new StringReader("100001.00"), 4)
+		t = new NumberState().nextToken(pr, pr.read(), mock)
+		assert pr.readLine() == 0xFFFF
+		assert t.type == Type.NUMBER
+		assert t.numberValue == 100001.00
+		assert t.stringValue == null
+	}
+	
 }
