@@ -131,21 +131,23 @@ class StateTests extends GMockTestCase {
 	
 	@Test
 	void testNumberState() {
+		PushbackReader pr = new PushbackReader(new StringReader("-.test"), 4)
+		int minusChar = '-' as char
+		SymbolState symbolState = mock(SymbolState.class)
 		Tokenizer mock = mock(Tokenizer.class)
-		SymbolState symbolState = new SymbolState()
-		mock.getSymbolState().returns(symbolState)
+
+		symbolState.nextToken(pr, minusChar, mock).returns(new Token(type:Type.SYMBOL, stringValue:"-"))
+		mock.getSymbolState().returns((SymbolState) symbolState)
 		
 		play {
-			PushbackReader pr = new PushbackReader(new StringReader("-.test"), 4)
 			Token t = new NumberState().nextToken(pr, pr.read(), mock)
-			
 			assert pr.readLine() == ".test"
 			assert t.type == Type.SYMBOL
 			assert t.numberValue == 0
 			assert t.stringValue == "-"
 		}
 		
-		PushbackReader pr = new PushbackReader(new StringReader("123+1234"), 4)
+		pr = new PushbackReader(new StringReader("123+1234"), 4)
 		Token t = new NumberState().nextToken(pr, pr.read(), mock)
 		assert pr.readLine() == "+1234"
 		assert t.type == Type.NUMBER
