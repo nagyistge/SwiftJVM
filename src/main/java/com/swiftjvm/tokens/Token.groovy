@@ -21,7 +21,7 @@ class Token {
 		if (type == Type.EOF) {
 			return "EOF"
 		}
-		return value().toString()
+		return "${value().toString()}<${type.name()}>"
 	}
 	
 	Object value() {

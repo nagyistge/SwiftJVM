@@ -73,6 +73,8 @@ class SymbolState extends State {
 		add("<=")
 		add(">=")
 		add("==")
+		add("&&")
+		add("||")
 	}
 	
 	void add(String symbol) {
