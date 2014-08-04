@@ -84,6 +84,6 @@ class NumberState extends State {
 		if (absorbedLeadingMinus) {
 			value = -value
 		}
-		return new Token(Type:Type.NUMBER, numberValue:value)
+		return new Token(type:Type.NUMBER, numberValue:value)
 	}
 }
